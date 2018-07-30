@@ -249,6 +249,26 @@ function index(req, res, next) {
 		return next();
 	}
 
+	// https://wicg.github.io/feature-policy/
+	// Skipped: fullscreen, picture-in-picture
+	const features = [
+		"accelerometer 'none'",
+		"ambient-light-sensor 'none'",
+		"autoplay 'none'",
+		"camera 'none'",
+		"encrypted-media 'none'",
+		"geolocation 'none'",
+		"gyroscope 'none'",
+		"magnetometer 'none'",
+		"microphone 'none'",
+		"midi 'none'",
+		"payment 'none'",
+		"speaker 'none'",
+		"usb 'none'",
+		"vr 'none'",
+		"document-write 'none'",
+	];
+
 	const policies = [
 		"default-src 'none'", // default to nothing
 		"form-action 'self'", // 'self' to fix saving passwords in Firefox, even though login is handled in javascript
@@ -274,6 +294,7 @@ function index(req, res, next) {
 
 	res.setHeader("Content-Type", "text/html");
 	res.setHeader("Content-Security-Policy", policies.join("; "));
+	res.setHeader("Feature-Policy", features.join("; "));
 	res.setHeader("Referrer-Policy", "no-referrer");
 
 	return fs.readFile(path.join(__dirname, "..", "client", "index.html.tpl"), "utf-8", (err, file) => {
