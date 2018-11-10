@@ -85,6 +85,14 @@ module.exports = function() {
 		return res.sendFile(path.join(packagePath, fileName));
 	});
 
+	app.post("/report-violation", (req, res) => {
+		if (req.body) {
+			log.warn(`${colors.red("Browser report")} [${req.headers["content-type"]}] ${req.body}`);
+		}
+
+		res.status(204).end();
+	});
+
 	let server = null;
 
 	if (Helper.config.public && (Helper.config.ldap || {}).enable) {
@@ -280,6 +288,7 @@ function index(req, res, next) {
 		"manifest-src 'self'", // manifest.json
 		"font-src 'self' https:", // allow loading fonts from secure sites (e.g. google fonts)
 		"media-src 'self' https:", // self for notification sound; allow https media (audio previews)
+		"report-to 'default'",
 	];
 
 	// If prefetch is enabled, but storage is not, we have to allow mixed content
@@ -296,6 +305,9 @@ function index(req, res, next) {
 	res.setHeader("Content-Security-Policy", policies.join("; "));
 	res.setHeader("Feature-Policy", features.join("; "));
 	res.setHeader("Referrer-Policy", "no-referrer");
+	res.setHeader("X-XSS-Protection", "1; mode=block; report=report-violation");
+	res.setHeader("Report-To", '{"group":"default","url":"report-violation","max_age":86400}'); // https://www.w3.org/TR/reporting/
+	res.setHeader("NEL", '{"report_to":"default","max_age":86400}'); // https://www.w3.org/TR/network-error-logging/
 
 	return fs.readFile(path.join(__dirname, "..", "client", "index.html.tpl"), "utf-8", (err, file) => {
 		if (err) {
