@@ -8,12 +8,11 @@ exports.input = function(network, chan, cmd, args) {
 	}
 
 	let targetChan = network.getChannel(args[0]);
-	let message = args.slice(1).join(" ");
+	const message = args.slice(1).join(" ");
 
 	network.irc.notice(args[0], message);
 
 	if (typeof targetChan === "undefined") {
-		message = "{to " + args[0] + "} " + message;
 		targetChan = chan;
 	}
 

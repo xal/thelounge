@@ -70,6 +70,10 @@ module.exports = function(irc, network) {
 			if (typeof chan === "undefined") {
 				// Send notices that are not targeted at us into the server window
 				if (data.type === Msg.Type.NOTICE) {
+					if (self && data.nick !== data.target) {
+						data.message = `{to ${target}} ${data.message}`;
+					}
+
 					showInActive = true;
 					chan = network.channels[0];
 				} else {
