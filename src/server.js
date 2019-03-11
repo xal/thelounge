@@ -525,6 +525,12 @@ function initializeClient(socket, client, token, lastMessage) {
 
 				if (newSetting.name === "highlights") {
 					client.compileCustomHighlights();
+				} else if (newSetting.name === "awayMessage") {
+					if (typeof newSetting.value !== "string") {
+						newSetting.value = "";
+					}
+
+					client.awayMessage = newSetting.value;
 				}
 			}
 		});
