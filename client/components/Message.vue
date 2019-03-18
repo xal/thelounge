@@ -100,9 +100,15 @@ export default {
 	},
 	computed: {
 		messageTime() {
-			const format = this.$root.settings.showSeconds ? constants.timeFormats.msgWithSeconds : constants.timeFormats.msgDefault;
+			let format;
 
-			return moment(this.message.time).format(format);
+			if (this.$root.settings.use12hClock) {
+				format = this.$root.settings.showSeconds ? "msg12hWithSeconds" : "msg12h";
+			} else {
+				format = this.$root.settings.showSeconds ? "msgWithSeconds" : "msgDefault";
+			}
+
+			return moment(this.message.time).format(constants.timeFormats[format]);
 		},
 		messageComponent() {
 			return "message-" + this.message.type;

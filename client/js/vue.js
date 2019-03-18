@@ -1,11 +1,12 @@
 "use strict";
 
+const moment = require("moment");
 const Vue = require("vue").default;
 const App = require("../components/App.vue").default;
 const roundBadgeNumber = require("./libs/handlebars/roundBadgeNumber");
-const localetime = require("./libs/handlebars/localetime");
 const friendlysize = require("./libs/handlebars/friendlysize");
 const colorClass = require("./libs/handlebars/colorClass");
+const constants = require("../js/constants");
 
 Vue.filter("localetime", localetime);
 Vue.filter("friendlysize", friendlysize);
@@ -36,6 +37,7 @@ const vueApp = new Vue({
 			motd: true,
 			notification: true,
 			notifyAllMessages: false,
+			use12hClock: false,
 			showSeconds: false,
 			statusMessages: "condensed",
 			theme: document.getElementById("theme").dataset.serverTheme,
@@ -80,6 +82,18 @@ function initChannel(channel) {
 	if (channel.type === "channel") {
 		channel.usersOutdated = true;
 	}
+}
+
+function localetime(time) {
+	let format = "D MMMM YYYY, ";
+
+	if (vueApp.settings.use12hClock) {
+		format += constants.timeFormats.msg12hWithSeconds;
+	} else {
+		format += constants.timeFormats.msgWithSeconds;
+	}
+
+	return moment(time).format(format);
 }
 
 module.exports = {

@@ -90,6 +90,8 @@ const condensedTypesQuery = "." + condensedTypes.join(", .");
 const timeFormats = {
 	msgDefault: "HH:mm",
 	msgWithSeconds: "HH:mm:ss",
+	msg12h: "hh:mm A",
+	msg12hWithSeconds: "hh:mm:ss A",
 };
 
 module.exports = {
