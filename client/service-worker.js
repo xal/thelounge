@@ -122,6 +122,10 @@ function showNotification(event, payload) {
 		return;
 	}
 
+	if (payload.highlights && self.navigator.setAppBadge) {
+		self.navigator.setAppBadge(payload.highlights);
+	}
+
 	// get current notification, close it, and draw new
 	event.waitUntil(
 		self.registration

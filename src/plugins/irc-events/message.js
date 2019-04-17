@@ -167,6 +167,17 @@ module.exports = function(irc, network) {
 				}`;
 			}
 
+			// Count total highlights for the app badge
+			const appHighlights = client.networks.reduce(
+				(value, otherNetwork) =>
+					value +
+					otherNetwork.channels.reduce(
+						(chanValue, otherChannel) => chanValue + otherChannel.highlights,
+						0
+					),
+				0
+			);
+
 			client.manager.webPush.push(
 				client,
 				{
@@ -175,6 +186,7 @@ module.exports = function(irc, network) {
 					timestamp: data.time || Date.now(),
 					title: title,
 					body: body,
+					highlights: appHighlights,
 				},
 				true
 			);
