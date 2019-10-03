@@ -9,7 +9,7 @@ const merge = require("./ircmessageparser/merge");
 const colorClass = require("./colorClass");
 const emojiMap = require("../fullnamemap.json");
 const LinkPreviewToggle = require("../../../components/LinkPreviewToggle.vue").default;
-const emojiModifiersRegex = /[\u{1f3fb}-\u{1f3ff}]/gu;
+const emojiModifiersRegex = /[\u{1f3fb}-\u{1f3ff}]|\u{fe0f}/gu;
 
 // Create an HTML `span` with styling information for a given fragment
 function createFragment(fragment, createElement) {
