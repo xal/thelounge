@@ -157,6 +157,7 @@ kbd {
 }
 
 /* Form elements */
+/* stylelint-disable selector-no-vendor-prefix */
 
 #chat-container ::-moz-placeholder {
 	color: #b7c5d1;
@@ -172,5 +173,7 @@ kbd {
 	color: #b7c5d1;
 	opacity: 0.75;
 }
+
+/* stylelint-enable selector-no-vendor-prefix */
 
 /* End form elements */
