@@ -470,6 +470,8 @@ Client.prototype.open = function(socketId, target) {
 		return;
 	}
 
+	const hadHighlights = target.chan.highlight > 0;
+
 	target.chan.unread = 0;
 	target.chan.highlight = 0;
 
@@ -481,6 +483,17 @@ Client.prototype.open = function(socketId, target) {
 	this.lastActiveChannel = target.chan.id;
 
 	this.emit("open", target.chan.id);
+
+	if (hadHighlights) {
+		this.manager.webPush.push(
+			this,
+			{
+				type: "notification_clear",
+				chanId: target.chan.id,
+			},
+			true
+		);
+	}
 };
 
 Client.prototype.sort = function(data) {

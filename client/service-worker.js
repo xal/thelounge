@@ -118,6 +118,28 @@ self.addEventListener("push", function(event) {
 });
 
 function showNotification(event, payload) {
+	if (payload.type === "notification_clear") {
+		return event.waitUntil(
+			self.registration
+				.showNotification("The Lounge", {
+					tag: `chan-${payload.chanId}`,
+				})
+				.then(() =>
+					self.registration
+						.getNotifications({
+							tag: `chan-${payload.chanId}`,
+						})
+						.then((notifications) => {
+							setTimeout(() => {
+								for (const notification of notifications) {
+									notification.close();
+								}
+							}, 100);
+						})
+				)
+		);
+	}
+
 	if (payload.type !== "notification") {
 		return;
 	}
