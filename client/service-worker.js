@@ -122,8 +122,8 @@ function showNotification(event, payload) {
 		return;
 	}
 
-	if (payload.highlights && self.navigator.setAppBadge) {
-		self.navigator.setAppBadge(payload.highlights);
+	if (payload.highlights && self.navigator.setExperimentalAppBadge) {
+		self.navigator.setExperimentalAppBadge(payload.highlights);
 	}
 
 	// get current notification, close it, and draw new

@@ -64,11 +64,11 @@ function synchronizeNotifiedState() {
 	updateTitle(highlights);
 	toggleNotificationMarkers(highlights > 0);
 
-	if (navigator.setAppBadge) {
+	if (navigator.setExperimentalAppBadge) {
 		if (highlights > 0) {
-			navigator.setAppBadge(highlights);
+			navigator.setExperimentalAppBadge(highlights);
 		} else {
-			navigator.clearAppBadge();
+			navigator.clearExperimentalAppBadge();
 		}
 	}
 }
