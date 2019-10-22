@@ -281,6 +281,7 @@ kbd {
 #chat .toggle-content .more-caret::before,
 #chat .scroll-down-arrow::after,
 #chat .topic-container .save-topic span::before,
+#chat .msg .showInActive span::before,
 #version-checker::before,
 .context-menu-item::before,
 #help .website-link::before,
@@ -478,6 +479,10 @@ kbd {
 
 #image-viewer .next-image-btn::before {
 	content: "\f105"; /* http://fontawesome.io/icon/angle-right/ */
+}
+
+#chat .msg .showInActive span::before {
+	content: "\f023"; /* https://fontawesome.com/icons/lock?style=solid */
 }
 
 /* End icons */
@@ -1479,6 +1484,10 @@ background on hover (unless active) */
 
 #chat .channel .msg.highlight .content {
 	border-left: 1px solid var(--highlight-bg-color);
+}
+
+#chat .msg .showInActive {
+	margin-right: 5px;
 }
 
 #chat .toggle-content.opened .more-caret, /* Expand/Collapse link previews */

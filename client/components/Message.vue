@@ -48,6 +48,12 @@
 				</template>
 			</span>
 			<span class="content">
+				<span
+					v-if="message.showInActive"
+					aria-label="This message was shown in your active channel"
+					class="showInActive tooltipped tooltipped-e"
+					><span></span
+				></span>
 				<ParsedMessage :network="network" :message="message" />
 				<LinkPreview
 					v-for="preview in message.previews"
