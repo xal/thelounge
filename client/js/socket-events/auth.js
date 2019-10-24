@@ -76,6 +76,7 @@ socket.on("auth", function(data) {
 			$("#loading-page-message").text(vueApp.currentUserVisibleError);
 
 			let lastMessage = -1;
+			const channelData = [];
 
 			for (const network of vueApp.networks) {
 				for (const chan of network.channels) {
@@ -86,12 +87,17 @@ socket.on("auth", function(data) {
 							lastMessage = id;
 						}
 					}
+
+					channelData.push({
+						id: chan.id,
+						firstUnread: chan.firstUnread,
+					});
 				}
 			}
 
 			const openChannel = (vueApp.activeChannel && vueApp.activeChannel.channel.id) || null;
 
-			socket.emit("auth", {user, token, lastMessage, openChannel});
+			socket.emit("auth", {user, token, lastMessage, openChannel, channelData});
 		}
 	}
 

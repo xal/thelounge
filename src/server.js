@@ -331,8 +331,10 @@ function indexRequest(req, res) {
 	);
 }
 
-function initializeClient(socket, client, token, lastMessage, openChannel) {
+function initializeClient(socket, client, token, lastMessage, openChannel, channelData) {
 	socket.emit("authorized");
+
+	channelData = verifyChannelData(channelData);
 
 	client.clientAttach(socket.id, token);
 
@@ -633,6 +635,17 @@ function initializeClient(socket, client, token, lastMessage, openChannel) {
 	socket.join(client.id);
 
 	const sendInitEvent = (tokenToSend) => {
+		// If client opened channels while disconnected, we need to resync unread counters
+		client.networks.forEach((network) => {
+			network.channels.forEach((chan) => {
+				const data = channelData.get(chan.id);
+
+				if (data) {
+					chan.synchronizeUnreads(data);
+				}
+			});
+		});
+
 		socket.emit("init", {
 			applicationServerKey: manager.webPush.vapidKeys.publicKey,
 			pushSubscription: client.config.sessions[token],
@@ -717,7 +730,14 @@ function performAuthentication(data) {
 	let token = null;
 
 	const finalInit = () => {
-		initializeClient(socket, client, token, data.lastMessage || -1, data.openChannel);
+		initializeClient(
+			socket,
+			client,
+			token,
+			data.lastMessage || -1,
+			data.openChannel,
+			data.channelData
+		);
 
 		if (!Helper.config.public) {
 			client.manager.updateUser(client.name, {
@@ -841,4 +861,28 @@ function reverseDnsLookup(ip, callback) {
 			return callback(ip);
 		});
 	});
+}
+
+function verifyChannelData(channelData) {
+	// We're sending unkeyed array from client because JS isn't particularly nice
+	// And we verify the types of sent data here
+	const channelDataPerId = new Map();
+
+	if (!Array.isArray(channelData)) {
+		return channelDataPerId;
+	}
+
+	for (const clientChan of channelData) {
+		if (
+			typeof clientChan !== "object" ||
+			typeof clientChan.id !== "number" ||
+			typeof clientChan.firstUnread !== "number"
+		) {
+			return channelDataPerId;
+		}
+
+		channelDataPerId.set(clientChan.id, clientChan);
+	}
+
+	return channelDataPerId;
 }

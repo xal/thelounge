@@ -195,6 +195,33 @@ Chan.prototype.getFilteredClone = function(lastActiveChannel, lastMessage) {
 	}, {});
 };
 
+Chan.prototype.synchronizeUnreads = function(data) {
+	if (
+		data.firstUnread <= this.firstUnread ||
+		data.firstUnread > this.messages[this.messages.length - 1].id
+	) {
+		return;
+	}
+
+	let unread = 0;
+	let highlight = 0;
+
+	for (const msg of this.messages) {
+		if (msg.id > data.firstUnread) {
+			unread++;
+
+			if (msg.highlight) {
+				highlight++;
+			}
+		}
+	}
+
+	// TODO: Send updated counters to other open clients
+	this.unread = unread;
+	this.highlight = highlight;
+	this.firstUnread = data.firstUnread;
+};
+
 Chan.prototype.writeUserLog = function(client, msg) {
 	this.messages.push(msg);
 
