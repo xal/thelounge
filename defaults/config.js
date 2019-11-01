@@ -439,6 +439,17 @@ module.exports = {
 		},
 	},
 
+	fcmPushEnabled: false,
+	// push notifications for mobile devices
+	fcmPush: {
+		// FCM token to send pushes
+		// Disabled by default
+		// shoud be like serverToken: "AAAALxJhc0Q:APA91bFVC5YwqyFMcXW0ow.........."
+		// Applen APNs keys should be added to related FCM project to enabled pushes on iOS
+		// More about FCM and how to get key - https://firebase.google.com/docs/cloud-messaging/
+		serverToken: "",
+	},
+
 	// ## Debugging settings
 
 	// The `debug` object contains several settings to enable debugging in The

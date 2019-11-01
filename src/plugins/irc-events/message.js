@@ -141,11 +141,11 @@ module.exports = function(irc, network) {
 
 		chan.pushMessage(client, msg, !msg.self);
 
+		let title = chan.name;
+		let body = cleanIrcMessage(data.message);
+
 		// Do not send notifications for messages older than 15 minutes (znc buffer for example)
 		if (msg.highlight && (!data.time || data.time > Date.now() - 900000)) {
-			let title = chan.name;
-			let body = cleanIrcMessage(data.message);
-
 			if (msg.type === Msg.Type.ACTION) {
 				// For actions, do not include colon in the message
 				body = `${data.nick} ${body}`;
@@ -165,6 +165,34 @@ module.exports = function(irc, network) {
 				body += `\n\n… and ${chan.highlight - 1} other message${
 					chan.highlight > 2 ? "s" : ""
 				}`;
+			}
+
+			const isLobbyChannel = chan.type === "lobby";
+			const isSpecialChannel = chan.type === "special";
+
+			if (!isLobbyChannel && !isSpecialChannel) {
+				try {
+					client.manager.fcmPush.pushToSingleClient(
+						client,
+						{
+							title: title,
+							body: body,
+						},
+						{
+							// special action for flutter library
+							click_action: "FLUTTER_NOTIFICATION_CLICK",
+							type: "notification",
+							chanId: chan.id,
+							messageId: msg.id,
+							timestamp: data.time || Date.now(),
+							title: title,
+							body: body,
+						}
+					);
+				} catch (e) {
+					// eslint-disable-next-line no-console
+					console.log("Error during sending FCM message");
+				}
 			}
 
 			client.manager.webPush.push(

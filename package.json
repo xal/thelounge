@@ -47,6 +47,7 @@
     "cheerio": "0.22.0",
     "commander": "3.0.2",
     "express": "4.17.1",
+    "fcm-node": "1.5.2",
     "file-type": "12.3.1",
     "filenamify": "4.1.0",
     "fs-extra": "8.1.0",
