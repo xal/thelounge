@@ -11,7 +11,10 @@
 		{{> ../reveal-password}}
 	</div>
 
-	<div class="error">Authentication failed.</div>
+	<div class="sign_form_message"></div>
 
-	<button type="submit" class="btn">Sign in</button>
+	<button id="btn_sign_in" type="submit" class="btn">Sign in</button>
+	{{#if signUp}}
+	<button id="btn_sign_up" type="submit" class="btn">Sign up</button>
+	{{/if}}
 </form>

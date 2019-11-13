@@ -7,6 +7,37 @@ const utils = require("../utils");
 const templates = require("../../views");
 const {vueApp} = require("../vue");
 
+socket.on("signed-up", function(data) {
+	const login = $("#sign-in");
+
+	const signMessage = login.find(".sign_form_message");
+
+	if (!data.success) {
+		switch (data.errorType) {
+			case "invalid":
+				signMessage.text("Invalid username or password");
+				break;
+			case "already_exist":
+				signMessage.text("User already exist");
+				break;
+			default:
+				signMessage.text("Unknown error");
+				break;
+		}
+	} else {
+		signMessage.text("Success sign up");
+	}
+
+	signMessage
+		.show()
+		.closest("form")
+		.one("submit", function() {
+			signMessage.hide();
+		});
+
+	login.find(".btn").prop("disabled", false);
+});
+
 socket.on("auth", function(data) {
 	// If we reconnected and serverHash differs, that means the server restarted
 	// And we will reload the page to grab the latest version
@@ -20,26 +51,33 @@ socket.on("auth", function(data) {
 
 	const login = $("#sign-in");
 
+	const signMessage = login.find(".sign_form_message");
+
+	signMessage.hide();
+
 	if (data.serverHash > -1) {
 		utils.serverHash = data.serverHash;
 
-		login.html(templates.windows.sign_in());
+		login.html(templates.windows.sign_in(data));
 
 		utils.togglePasswordField("#sign-in .reveal-password");
+
+		let isSignIn = true;
+
+		$("#btn_sign_up").click(function(_) {
+			isSignIn = false;
+			return true;
+		});
+
+		$("#btn_sign_in").click(function(_) {
+			isSignIn = true;
+			return true;
+		});
 
 		login.find("form").on("submit", function() {
 			const form = $(this);
 
-			form.find(".btn").prop("disabled", true);
-
-			const values = {};
-			$.each(form.serializeArray(), function(i, obj) {
-				values[obj.name] = obj.value;
-			});
-
-			storage.set("user", values.user);
-
-			socket.emit("auth", values);
+			onSignFormSubmitted(form, isSignIn);
 
 			return false;
 		});
@@ -61,12 +99,12 @@ socket.on("auth", function(data) {
 
 		storage.remove("token");
 
-		const error = login.find(".error");
-		error
+		signMessage.text("Authentication failed.");
+		signMessage
 			.show()
 			.closest("form")
 			.one("submit", function() {
-				error.hide();
+				signMessage.hide();
 			});
 	} else if (user) {
 		token = storage.get("token");
@@ -110,3 +148,20 @@ socket.on("auth", function(data) {
 			pushState: false,
 		});
 });
+
+function onSignFormSubmitted(form, isSignIn) {
+	form.find(".btn").prop("disabled", true);
+
+	const values = {};
+	$.each(form.serializeArray(), function(i, obj) {
+		values[obj.name] = obj.value;
+	});
+
+	storage.set("user", values.user);
+
+	if (isSignIn) {
+		socket.emit("auth", values);
+	} else {
+		socket.emit("sign-up", values);
+	}
+}
