@@ -10,6 +10,7 @@ const Auth = require("./plugins/auth");
 const Client = require("./client");
 const Helper = require("./helper");
 const WebPush = require("./plugins/webpush");
+const FCMPush = require("./plugins/fcmpush");
 
 module.exports = ClientManager;
 
@@ -21,6 +22,7 @@ ClientManager.prototype.init = function (identHandler, sockets) {
 	this.sockets = sockets;
 	this.identHandler = identHandler;
 	this.webPush = new WebPush();
+	this.fcmPush = new FCMPush(Helper.config.fcmPush.serverToken);
 
 	if (!Helper.config.public) {
 		this.loadUsers();

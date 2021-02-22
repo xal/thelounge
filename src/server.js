@@ -576,6 +576,10 @@ function initializeClient(socket, client, token, lastMessage, openChannel) {
 		socket.on("push:unregister", () => client.unregisterPushSubscription(token));
 	}
 
+	socket.on("push:fcmToken", (subscription) => {
+		client.fcmToken = subscription.token;
+	});
+
 	const sendSessionList = () => {
 		const sessions = _.map(client.config.sessions, (session, sessionToken) => ({
 			current: sessionToken === token,
