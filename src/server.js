@@ -18,6 +18,7 @@ const Identification = require("./identification");
 const changelog = require("./plugins/changelog");
 const inputs = require("./plugins/inputs");
 const Auth = require("./plugins/auth");
+const bcrypt = require("bcryptjs");
 
 const themes = require("./plugins/packages/themes");
 themes.loadLocalThemes();
@@ -177,6 +178,10 @@ module.exports = function (options = {}) {
 			} else {
 				socket.on("auth:perform", performAuthentication);
 				socket.emit("auth:start", serverHash);
+
+				if (Helper.config.signUp) {
+					socket.on("sign-up", performSignUp);
+				}
 			}
 		});
 
@@ -749,6 +754,42 @@ function getServerConfiguration() {
 	config.stylesheets = packages.getStylesheets();
 
 	return config;
+}
+
+function performSignUp(data) {
+	if (typeof data !== "object") {
+		return;
+	}
+
+	const socket = this;
+
+	const user = data.user;
+	const password = data.password;
+	const salt = bcrypt.genSaltSync(8);
+	const hash = bcrypt.hashSync(password, salt);
+	let addUserResult;
+
+	let success;
+	let errorType;
+
+	try {
+		addUserResult = manager.addUser(user, hash);
+	} catch (e) {
+		errorType = "invalid";
+		success = false;
+	}
+
+	if (!addUserResult) {
+		errorType = "already_exist";
+		success = false;
+	} else {
+		success = true;
+	}
+
+	socket.emit("signed-up", {
+		success: success,
+		errorType: errorType,
+	});
 }
 
 function performAuthentication(data) {
