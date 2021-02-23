@@ -711,7 +711,13 @@ function initializeClient(socket, client, token, lastMessage, openChannel) {
 }
 
 function getClientConfiguration() {
-	const config = _.pick(Helper.config, ["public", "lockNetwork", "useHexIp", "prefetch"]);
+	const config = _.pick(Helper.config, [
+		"public",
+		"lockNetwork",
+		"useHexIp",
+		"prefetch",
+		"signUp",
+	]);
 
 	config.fileUpload = Helper.config.fileUpload.enable;
 	config.ldapEnabled = Helper.config.ldap.enable;
