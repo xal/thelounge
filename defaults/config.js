@@ -470,6 +470,7 @@ module.exports = {
 	},
 
 	// push notifications for mobile devices
+	fcmPushEnabled: false,
 	fcmPush: {
 		// FCM token to send pushes
 		// Disabled by default

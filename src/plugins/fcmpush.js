@@ -2,7 +2,9 @@ const FCM = require("fcm-node");
 const log = require("../log");
 
 class FCMPush {
-	constructor(fcmToken) {
+	constructor(fcmToken, enabled) {
+		this.enabled = enabled;
+		log.debug("init FCMPush enabled " + enabled);
 		if (fcmToken === undefined || fcmToken === null || fcmToken === "") {
 			this.initialized = false;
 			log.warn(
@@ -18,7 +20,7 @@ class FCMPush {
 	}
 
 	pushToSingleClient(client, notification, data, collapse_key = "") {
-		if (this.initialized) {
+		if (this.initialized && this.enabled) {
 			if (client.fcmToken) {
 				const message = {
 					to: client.fcmToken,

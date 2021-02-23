@@ -22,7 +22,7 @@ ClientManager.prototype.init = function (identHandler, sockets) {
 	this.sockets = sockets;
 	this.identHandler = identHandler;
 	this.webPush = new WebPush();
-	this.fcmPush = new FCMPush(Helper.config.fcmPush.serverToken);
+	this.fcmPush = new FCMPush(Helper.config.fcmPush.serverToken, Helper.config.fcmPushEnabled);
 
 	if (!Helper.config.public) {
 		this.loadUsers();

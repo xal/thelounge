@@ -576,9 +576,11 @@ function initializeClient(socket, client, token, lastMessage, openChannel) {
 		socket.on("push:unregister", () => client.unregisterPushSubscription(token));
 	}
 
-	socket.on("push:fcmToken", (subscription) => {
-		client.fcmToken = subscription.token;
-	});
+	if (Helper.config.fcmPushEnabled) {
+		socket.on("push:fcmToken", (subscription) => {
+			client.fcmToken = subscription.token;
+		});
+	}
 
 	const sendSessionList = () => {
 		const sessions = _.map(client.config.sessions, (session, sessionToken) => ({
@@ -710,7 +712,13 @@ function initializeClient(socket, client, token, lastMessage, openChannel) {
 }
 
 function getClientConfiguration() {
-	const config = _.pick(Helper.config, ["public", "lockNetwork", "useHexIp", "prefetch"]);
+	const config = _.pick(Helper.config, [
+		"public",
+		"lockNetwork",
+		"useHexIp",
+		"prefetch",
+		"fcmPushEnabled",
+	]);
 
 	config.fileUpload = Helper.config.fileUpload.enable;
 	config.ldapEnabled = Helper.config.ldap.enable;
