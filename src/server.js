@@ -180,7 +180,7 @@ module.exports = function (options = {}) {
 				socket.emit("auth:start", serverHash);
 
 				if (Helper.config.signUp) {
-					socket.emit("sign-up:available", serverHash);
+					socket.emit("sign-up:available");
 					socket.on("sign-up", performSignUp);
 				}
 			}
