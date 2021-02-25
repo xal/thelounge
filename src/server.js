@@ -179,8 +179,9 @@ module.exports = function (options = {}) {
 				socket.on("auth:perform", performAuthentication);
 				socket.emit("auth:start", serverHash);
 
+				socket.emit("sign-up:available", Helper.config.signUp);
+
 				if (Helper.config.signUp) {
-					socket.emit("sign-up:available");
 					socket.on("sign-up", performSignUp);
 				}
 			}
