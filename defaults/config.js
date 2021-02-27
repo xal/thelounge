@@ -18,6 +18,13 @@ module.exports = {
 	// This value is set to `false` by default.
 	public: false,
 
+	// Allow to signup when a server is private
+	// It has no effect when server is public
+	//
+	// @type 		boolean
+	// @default false
+	signUp: false,
+
 	// ### `host`
 	//
 	// IP address or hostname for the web server to listen to. For example, set it
